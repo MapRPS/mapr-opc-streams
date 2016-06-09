@@ -2,7 +2,7 @@ threads: 3
 hostname: 10.0.0.157
 domain: localhost
 user: Administrator
-password: your passwd
+password: "?QhA(umAVR"
 progId: SWToolbox.TOPServer.V5
 #clsid: 680DFBF7-C92D-484D-84BE-06DC3DECCD68
 # Fetchinterval in seconds

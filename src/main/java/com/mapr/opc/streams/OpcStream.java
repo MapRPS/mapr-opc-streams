@@ -15,6 +15,7 @@ import org.openscada.opc.lib.common.NotConnectedException;
 import org.openscada.opc.lib.da.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -36,12 +37,15 @@ public class OpcStream {
 
     public static void main(String[] args) throws Exception {
         LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.install();
+
         if (args.length != 1) {
             System.out.println("Usage: mapr-opc-streams <config file>");
             return;
         }
         OpcStream opcStream = new OpcStream(args[0]);
         opcStream.start();
+        Thread.sleep(Long.MAX_VALUE);
     }
 
     private OpcStream(String configFile) throws FileNotFoundException {
@@ -92,12 +96,7 @@ public class OpcStream {
 
         } catch (JIException | AlreadyConnectedException | DuplicateGroupException | UnknownHostException | AddFailedException | NotConnectedException e) {
             throw new OpcException("Error during start", e);
-        } finally {
-            if(producer != null) {
-                producer.close();
-            }
         }
-
     }
 
     private <T> T getValueOrDefault(T value, T defaultValue) {
@@ -142,9 +141,10 @@ public class OpcStream {
                     message = message.replace("{ERROR}", Integer.toString(state.getErrorCode()));
                     producer.send(new ProducerRecord<>(topic, message));
                     producer.flush();
+//                    System.out.println(message);
                     long count = counter.incrementAndGet();
                     if (count % 100 == 0) {
-                        logger.info("Processed messages");
+                        logger.info("Processed messages: " + count);
                     }
                     logger.debug("Event processed: " + message);
 
