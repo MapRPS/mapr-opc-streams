@@ -6,6 +6,8 @@ import java.util.List;
  * Created by chufe on 10/06/16.
  */
 public class OpcConfig {
+    private String kafkaBatchSize;
+    private String kafkaProducerType;
     private String hostname;
     private String domain;
     private String user;
@@ -19,6 +21,22 @@ public class OpcConfig {
     private String timeFormat;
     private String lineFormat;
     private List<OpcItem> items;
+
+    public String getKafkaBatchSize() {
+        return kafkaBatchSize;
+    }
+
+    public void setKafkaBatchSize(String kafkaBatchSize) {
+        this.kafkaBatchSize = kafkaBatchSize;
+    }
+
+    public String getKafkaProducerType() {
+        return kafkaProducerType;
+    }
+
+    public void setKafkaProducerType(String kafkaProducerType) {
+        this.kafkaProducerType = kafkaProducerType;
+    }
 
     public Integer getThreads() {
         return threads;

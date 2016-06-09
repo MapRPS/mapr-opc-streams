@@ -55,8 +55,8 @@ public class OpcStream {
 
     private void start() {
         Properties properties = new Properties();
-        properties.setProperty("batch.size", "16384");
-        properties.setProperty("block.on.buffer.full", "true");
+        properties.setProperty("batch.size", getValueOrDefault(opcConfig.getKafkaBatchSize(), "100"));
+        properties.setProperty("producer.type", getValueOrDefault(opcConfig.getKafkaProducerType(), "async"));
         properties.setProperty("key.serializer", StringSerializer.class.getName());
         properties.setProperty("value.serializer", StringSerializer.class.getName());
         KafkaProducer<String, String> producer = null;
@@ -140,7 +140,7 @@ public class OpcStream {
                     message = message.replace("{QUALITY}", Short.toString(state.getQuality()));
                     message = message.replace("{ERROR}", Integer.toString(state.getErrorCode()));
                     producer.send(new ProducerRecord<>(topic, message));
-                    producer.flush();
+//                    producer.flush();
 //                    System.out.println(message);
                     long count = counter.incrementAndGet();
                     if (count % 100 == 0) {
