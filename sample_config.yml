@@ -1,0 +1,46 @@
+threads: 3
+hostname: 10.0.0.157
+domain: localhost
+user: Administrator
+password: your passwd
+progId: SWToolbox.TOPServer.V5
+#clsid: 680DFBF7-C92D-484D-84BE-06DC3DECCD68
+# Fetchinterval in seconds
+fetchIntervalInMs: 100
+# If true, the event is suppressed if the timestamp has not changed
+distinctTimeStamp: true
+# If true, the event is suppressed if the value is equal to the one before.
+distinctValue: true
+# Format per line, if you don't like to have a field, just remove it.
+lineFormat: "{ITEM_ID};{TIME};{VALUE};{QUALITY};{ERROR}"
+# millis Java millis or a Java Date Format, e.g. yyyy-MM-dd HH:mm:ss
+timeFormat: millis
+items:
+  - itemId: Simulation Examples.Functions.User1
+    topic: /user/mapr/opc:User1
+  - itemId: Simulation Examples.Functions.Sine1
+    topic: /user/mapr/opc:Sine1
+  - itemId: Data Type Examples.8 Bit Device.R Registers.Byte1
+    topic: /user/mapr/opc:Byte1
+  - itemId: Data Type Examples.8 Bit Device.R Registers.Word1
+    topic: /user/mapr/opc:Word1
+  - itemId: Data Type Examples.8 Bit Device.R Registers.Byte1
+    topic: /user/mapr/opc:Byte1
+  - itemId: Data Type Examples.8 Bit Device.R Registers.ByteArray
+    topic: /user/mapr/opc:ByteArray
+  - itemId: Data Type Examples.8 Bit Device.R Registers.DWordArray
+    topic: /user/mapr/opc:DWordArray
+  - itemId: Data Type Examples.8 Bit Device.R Registers.Char1
+    topic: /user/mapr/opc:Char1
+  - itemId: Data Type Examples.8 Bit Device.R Registers.CharArray
+    topic: /user/mapr/opc:CharArray
+  - itemId: Data Type Examples.8 Bit Device.R Registers.FloatArray
+    topic: /user/mapr/opc:FloatArray
+  - itemId: Data Type Examples.8 Bit Device.R Registers.DoubleArray
+    topic: /user/mapr/opc:DoubleArray
+  - itemId: Data Type Examples.8 Bit Device.R Registers.LongArray
+    topic: /user/mapr/opc:LongArray
+  - itemId: Data Type Examples.8 Bit Device.R Registers.ShortArray
+    topic: /user/mapr/opc:ShortArray
+  - itemId: Data Type Examples.8 Bit Device.R Registers.WordArray
+    topic: /user/mapr/opc:WordArray
