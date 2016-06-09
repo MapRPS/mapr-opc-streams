@@ -1,4 +1,6 @@
 threads: 3
+kafkaBatchSize: 100
+kafkaProducerType: async
 hostname: 10.0.0.157
 domain: localhost
 user: Administrator
