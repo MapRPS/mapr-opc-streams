@@ -1,10 +1,11 @@
 threads: 3
-kafkaBatchSize: 100
-kafkaProducerType: async
+kafkaBatchSize: 10
+# sync / asnc
+kafkaProducerType: sync
 hostname: 10.0.0.157
 domain: localhost
 user: Administrator
-password: "?QhA(umAVR"
+password: "your"
 progId: SWToolbox.TOPServer.V5
 #clsid: 680DFBF7-C92D-484D-84BE-06DC3DECCD68
 # Fetchinterval in seconds

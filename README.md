@@ -20,5 +20,7 @@ gradle eclipse
 Build with
 
 ```
-gradle clean distZip
+gradle clean build distZip
 ```
+
+Find an example config in `sample_config.yml` and run `mapr-opc-streams <config_file.yml>`
