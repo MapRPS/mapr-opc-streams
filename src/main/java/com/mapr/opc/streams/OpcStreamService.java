@@ -1,6 +1,5 @@
 package com.mapr.opc.streams;
 
-import org.abego.treelayout.internal.util.java.lang.string.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -17,6 +16,10 @@ import org.openscada.opc.lib.da.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -31,49 +34,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.LogManager;
 
-public class OpcStream {
-    private static final Logger logger = LoggerFactory.getLogger(OpcStream.class);
-    private final OpcConfig opcConfig;
+@Service
+public class OpcStreamService {
+    private static final Logger logger = LoggerFactory.getLogger(OpcStreamService.class);
+    @Autowired
+    private OpcConfig opcConfig;
     private AtomicLong counter = new AtomicLong(1L);
 
-
-    public static void main(String[] args) throws Exception {
-        LogManager.getLogManager().reset();
-        SLF4JBridgeHandler.install();
-
-        if (args.length != 1) {
-            System.out.println("Usage: mapr-opc-streams <config file>");
-            return;
-        }
-        OpcStream opcStream = new OpcStream(args[0]);
-        opcStream.start();
-        Thread.sleep(Long.MAX_VALUE);
-    }
-
-    private OpcStream(String configFile) throws FileNotFoundException {
-        Yaml yaml = new Yaml();
-        opcConfig = yaml.loadAs(new FileInputStream(new File(configFile)), OpcConfig.class);
-        writeDefaultsToItemIfEmpty(opcConfig);
-    }
-
-    private void writeDefaultsToItemIfEmpty(OpcConfig opcConfig) {
-        for (OpcItem opcItem : opcConfig.getItems()) {
-            if(StringUtils.isBlank(opcItem.getLineFormat())) {
-                opcItem.setLineFormat(opcConfig.getLineFormat());
-            }
-            if(StringUtils.isBlank(opcItem.getTimeFormat())) {
-                opcItem.setTimeFormat(opcConfig.getTimeFormat());
-            }
-            if(opcItem.getDistinctValue() == null) {
-                opcItem.setDistinctValue(opcConfig.getDistinctValue());
-            }
-            if(opcItem.getDistinctTimeStamp() == null) {
-                opcItem.setDistinctTimeStamp(opcConfig.getDistinctTimeStamp());
-            }
-        }
-    }
-
-    private void start() {
+    public void start() {
         Properties properties = new Properties();
         Map<String, String> kafka = opcConfig.getKafka();
         for (String kafkaKey : kafka.keySet()) {
