@@ -17,8 +17,8 @@ public class OpcConfig {
     private String clsId;
     private Integer fetchIntervalInMs;
     private Integer threads;
-    private boolean distinctTimeStamp;
-    private boolean distinctValue;
+    private Boolean distinctTimeStamp = Boolean.FALSE;
+    private Boolean distinctValue = Boolean.FALSE;
     private String timeFormat;
     private String lineFormat;
     private List<OpcItem> items;
@@ -103,19 +103,19 @@ public class OpcConfig {
         this.fetchIntervalInMs = fetchIntervalInMs;
     }
 
-    public boolean isDistinctTimeStamp() {
+    public Boolean getDistinctTimeStamp() {
         return distinctTimeStamp;
     }
 
-    public void setDistinctTimeStamp(boolean distinctTimeStamp) {
+    public void setDistinctTimeStamp(Boolean distinctTimeStamp) {
         this.distinctTimeStamp = distinctTimeStamp;
     }
 
-    public boolean isDistinctValue() {
+    public Boolean getDistinctValue() {
         return distinctValue;
     }
 
-    public void setDistinctValue(boolean distinctValue) {
+    public void setDistinctValue(Boolean distinctValue) {
         this.distinctValue = distinctValue;
     }
 

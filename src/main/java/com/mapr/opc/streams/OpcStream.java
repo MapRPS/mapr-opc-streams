@@ -1,5 +1,6 @@
 package com.mapr.opc.streams;
 
+import org.abego.treelayout.internal.util.java.lang.string.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -52,6 +53,24 @@ public class OpcStream {
     private OpcStream(String configFile) throws FileNotFoundException {
         Yaml yaml = new Yaml();
         opcConfig = yaml.loadAs(new FileInputStream(new File(configFile)), OpcConfig.class);
+        writeDefaultsToItemIfEmpty(opcConfig);
+    }
+
+    private void writeDefaultsToItemIfEmpty(OpcConfig opcConfig) {
+        for (OpcItem opcItem : opcConfig.getItems()) {
+            if(StringUtils.isBlank(opcItem.getLineFormat())) {
+                opcItem.setLineFormat(opcConfig.getLineFormat());
+            }
+            if(StringUtils.isBlank(opcItem.getTimeFormat())) {
+                opcItem.setTimeFormat(opcConfig.getTimeFormat());
+            }
+            if(opcItem.getDistinctValue() == null) {
+                opcItem.setDistinctValue(opcConfig.getDistinctValue());
+            }
+            if(opcItem.getDistinctTimeStamp() == null) {
+                opcItem.setDistinctTimeStamp(opcConfig.getDistinctTimeStamp());
+            }
+        }
     }
 
     private void start() {
@@ -91,7 +110,7 @@ public class OpcStream {
             server.connect();
             SyncAccess access = new SyncAccess(server, getValueOrDefault(opcConfig.getFetchIntervalInMs(), 1000));
             for (OpcItem item : opcConfig.getItems()) {
-                DataCallback itemCallback = createItemCallback(producer, item.getItemId(), item.getTopic());
+                DataCallback itemCallback = createItemCallback(producer, item, item.getTopic());
                 access.addItem(item.getItemId(), itemCallback);
             }
 
@@ -109,7 +128,7 @@ public class OpcStream {
         return value;
     }
 
-    private DataCallback createItemCallback(KafkaProducer<String, String> producer, String itemId, String topic) {
+    private DataCallback createItemCallback(KafkaProducer<String, String> producer, OpcItem opcItem, String topic) {
         return new DataCallback() {
             private long lastTime = 0;
             private String lastValue = "";
@@ -117,7 +136,7 @@ public class OpcStream {
             @Override
             public void changed(Item item, ItemState state) {
                 long currentTime = state.getTimestamp().getTimeInMillis();
-                if (opcConfig.isDistinctTimeStamp() && currentTime == lastTime) {
+                if (opcItem.getDistinctTimeStamp() && currentTime == lastTime) {
                     // equal time and distinctTime, do not track
                     return;
                 }
@@ -126,17 +145,17 @@ public class OpcStream {
                     JIVariant value = state.getValue();
                     Object object = value.getObject();
                     String converted = convert(object);
-                    if (opcConfig.isDistinctValue() && converted.equals(lastValue)) {
+                    if (opcItem.getDistinctValue() && converted.equals(lastValue)) {
                         // equal value and distinctValue, do not track
                         return;
                     }
                     lastValue = converted;
-                    String message = opcConfig.getLineFormat();
+                    String message = opcItem.getLineFormat();
                     message = message.replace("{ITEM_ID}", item.getId());
-                    if ("millis".equalsIgnoreCase(opcConfig.getTimeFormat())) {
+                    if ("millis".equalsIgnoreCase(opcItem.getTimeFormat())) {
                         message = message.replace("{TIME}", Long.toString(state.getTimestamp().getTimeInMillis()));
                     } else {
-                        SimpleDateFormat sdf = new SimpleDateFormat(opcConfig.getTimeFormat());
+                        SimpleDateFormat sdf = new SimpleDateFormat(opcItem.getTimeFormat());
                         message = message.replace("{TIME}", sdf.format(state.getTimestamp().getTime()));
                     }
                     message = message.replace("{VALUE}", converted);
