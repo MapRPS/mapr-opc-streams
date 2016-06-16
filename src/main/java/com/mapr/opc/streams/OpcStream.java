@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -55,8 +56,10 @@ public class OpcStream {
 
     private void start() {
         Properties properties = new Properties();
-        properties.setProperty("batch.size", getValueOrDefault(opcConfig.getKafkaBatchSize(), "100"));
-        properties.setProperty("producer.type", getValueOrDefault(opcConfig.getKafkaProducerType(), "async"));
+        Map<String, String> kafka = opcConfig.getKafka();
+        for (String kafkaKey : kafka.keySet()) {
+            properties.setProperty(kafkaKey, kafka.get(kafkaKey));
+        }
         properties.setProperty("key.serializer", StringSerializer.class.getName());
         properties.setProperty("value.serializer", StringSerializer.class.getName());
         KafkaProducer<String, String> producer = null;

@@ -1,13 +1,14 @@
 package com.mapr.opc.streams;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chufe on 10/06/16.
  */
 public class OpcConfig {
-    private String kafkaBatchSize;
-    private String kafkaProducerType;
+    private Map<String, String> kafka;
     private String hostname;
     private String domain;
     private String user;
@@ -22,20 +23,12 @@ public class OpcConfig {
     private String lineFormat;
     private List<OpcItem> items;
 
-    public String getKafkaBatchSize() {
-        return kafkaBatchSize;
+    public Map<String, String> getKafka() {
+        return kafka;
     }
 
-    public void setKafkaBatchSize(String kafkaBatchSize) {
-        this.kafkaBatchSize = kafkaBatchSize;
-    }
-
-    public String getKafkaProducerType() {
-        return kafkaProducerType;
-    }
-
-    public void setKafkaProducerType(String kafkaProducerType) {
-        this.kafkaProducerType = kafkaProducerType;
+    public void setKafka(Map<String, String> kafka) {
+        this.kafka = kafka;
     }
 
     public Integer getThreads() {
@@ -145,13 +138,15 @@ public class OpcConfig {
     @Override
     public String toString() {
         return "OpcConfig{" +
-                "hostname='" + hostname + '\'' +
+                "kafka=" + kafka +
+                ", hostname='" + hostname + '\'' +
                 ", domain='" + domain + '\'' +
                 ", user='" + user + '\'' +
-                ", password=*****" +
+                ", password='" + password + '\'' +
                 ", progId='" + progId + '\'' +
                 ", clsId='" + clsId + '\'' +
                 ", fetchIntervalInMs=" + fetchIntervalInMs +
+                ", threads=" + threads +
                 ", distinctTimeStamp=" + distinctTimeStamp +
                 ", distinctValue=" + distinctValue +
                 ", timeFormat='" + timeFormat + '\'' +
