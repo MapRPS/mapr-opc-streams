@@ -5,10 +5,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.jinterop.dcom.common.JIException;
-import org.jinterop.dcom.core.IJIUnsigned;
-import org.jinterop.dcom.core.JIArray;
-import org.jinterop.dcom.core.JIString;
-import org.jinterop.dcom.core.JIVariant;
+import org.jinterop.dcom.core.*;
 import org.openscada.opc.lib.common.AlreadyConnectedException;
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.openscada.opc.lib.common.NotConnectedException;
@@ -113,6 +110,10 @@ public class OpcStreamService {
                     JIVariant value = state.getValue();
                     Object object = value.getObject();
                     String converted = convert(object);
+                    if(converted == null) {
+                        logger.error("Retrieved empty value for " + item);
+                        return;
+                    }
                     if (opcItem.getDistinctValue() && converted.equals(lastValue)) {
                         // equal value and distinctValue, do not track
                         return;
@@ -148,9 +149,9 @@ public class OpcStreamService {
 
     private String convert(Object object) {
         if (object == null) {
-            return "[empty]";
+            return null;
         }
-        if (object instanceof JIString) {
+        else if (object instanceof JIString) {
             return ((JIString) object).getString();
         } else if (object instanceof IJIUnsigned) {
             return ((IJIUnsigned) object).getValue().toString();
@@ -171,7 +172,11 @@ public class OpcStreamService {
             char o = (Character) object;
             return Integer.toString((int) o);
         } else {
-            return object.toString();
+            String s = object.toString();
+            if(s.contains("EMPTY") || s.contains("NULL")) {
+                return null;
+            }
+            return s;
         }
     }
 
