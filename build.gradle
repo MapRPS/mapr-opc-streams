@@ -3,8 +3,9 @@ apply plugin: 'application'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-version = 0.1
+version = 0.2
 mainClassName = "com.mapr.opc.streams.OpcStream"
+archivesBaseName = 'mapr-opc-streams'
 
 configurations {
     compile.exclude group: "commons-logging", module: "commons-logging"
