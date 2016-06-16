@@ -60,5 +60,6 @@ public class OpcStreamApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         opcStreamService.start();
+        Thread.currentThread().join();
     }
 }
