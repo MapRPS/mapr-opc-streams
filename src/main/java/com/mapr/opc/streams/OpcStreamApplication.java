@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.LogManager;
 
 @SpringBootApplication
@@ -28,7 +30,15 @@ public class OpcStreamApplication implements CommandLineRunner {
             return;
         }
         configFile = args[0];
-        SpringApplication.run(OpcStreamApplication.class, args);
+        ConfigurableApplicationContext ctx = SpringApplication.run(OpcStreamApplication.class, args);
+        final CountDownLatch closeLatch = ctx.getBean(CountDownLatch.class);
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                closeLatch.countDown();
+            }
+        });
+        closeLatch.await();
     }
 
     @Bean
@@ -56,10 +66,13 @@ public class OpcStreamApplication implements CommandLineRunner {
         }
     }
 
+    @Bean
+    public CountDownLatch closeLatch() {
+        return new CountDownLatch(1);
+    }
 
     @Override
     public void run(String... args) throws Exception {
         opcStreamService.start();
-        Thread.currentThread().join();
     }
 }
