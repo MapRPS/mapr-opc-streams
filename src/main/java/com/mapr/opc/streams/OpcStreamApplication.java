@@ -1,6 +1,7 @@
 package com.mapr.opc.streams;
 
 import org.apache.commons.lang.StringUtils;
+import org.jinterop.dcom.common.JISystem;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,6 +25,7 @@ public class OpcStreamApplication implements CommandLineRunner {
 
     public static void main(String[] args) throws Exception {
         LogManager.getLogManager().reset();
+//        JISystem.setAutoRegisteration(true);
         SLF4JBridgeHandler.install();
         if (args.length != 1) {
             System.out.println("Usage: mapr-opc-streams <config file>");

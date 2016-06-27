@@ -1,0 +1,36 @@
+threads: 3
+# use kafka properties http://kafka.apache.org/07/configuration.html
+kafka:
+  producer.type: async
+  batch.size: 100
+  queue.time: 2000
+hostname: 10.56.131.184
+domain: localhost
+user: bigdata
+password: bigdata
+#progId: SWToolbox.TOPServer.V5
+clsId: C14D1400-D13A-11d2-93B9-0060B067C684
+# Fetchinterval in seconds
+fetchIntervalInMs: 10000
+# If true, the event is suppressed if the timestamp has not changed
+distinctTimeStamp: false
+# If true, the event is suppressed if the value is equal to the one before.
+distinctValue: false
+# Format per line, if you don't like to have a field, just remove it.
+lineFormat: "{ITEM_ID};{TIME};{VALUE};{QUALITY};{ERROR}"
+# millis Java millis or a Java Date Format, e.g. yyyy-MM-dd HH:mm:ss
+timeFormat: millis
+items:
+  - itemId: FCS0203!T05408.PV
+    topic: /workshop/opc-stream:FCS0203_T05408.PV
+  - itemId: FCS0204!L08440.PV
+    topic: /workshop/opc-stream:FCS0204_L08440.PV
+  - itemId: FCS0204!L08440.MV
+    topic: /workshop/opc-stream:FCS0204_L08440.MV
+  - itemId: FCS0204!L08440.DV
+    topic: /workshop/opc-stream:FCS0204_L08440.DV
+  - itemId: FCS0204!T08473.PV
+    topic: /workshop/opc-stream:FCS0204_T08473.PV
+  - itemId: FCS0204!T08473.MV
+    topic: /workshop/opc-stream:FCS0204_T08473.MV
+
